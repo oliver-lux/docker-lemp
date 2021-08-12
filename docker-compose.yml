@@ -1,0 +1,96 @@
+version: '3.9'
+
+networks:
+  app:
+  
+volumes:
+  mysql_data:
+  redis_data:
+
+services:
+
+  web:
+    build:
+      context: ./nginx
+      args:
+        - USER_ID=${USER_ID:-1000}
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php
+      - redis
+      - mysql
+    networks:
+      - app
+
+  php:
+    build:
+      context: ./php
+      args:
+        - USER_ID=${USER_ID:-1000}
+    container_name: php
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - app
+
+  mysql:
+    image: mariadb:10.5
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - app
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - app
+
+  npm:
+    image: node:13.7
+    container_name: npm
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - 3000:3000
+      - 3001:3001
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+    user: 1000:1000
+    profiles:
+      - tools
+    networks:
+      - app
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    profiles:
+      - tools
+    networks:
+      - app
