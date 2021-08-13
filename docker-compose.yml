@@ -69,7 +69,7 @@ services:
       - app
 
   npm:
-    image: node:13.7
+    image: node:lts-alpine3.14
     container_name: npm
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
