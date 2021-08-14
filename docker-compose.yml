@@ -42,7 +42,6 @@ services:
       - ./${SOURCE_DIR}:/var/www/html
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/health-check.sh"]
-      interval: 5s
       timeout: 10s
       retries: 3
     networks:
