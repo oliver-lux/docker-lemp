@@ -2,14 +2,14 @@ FROM nginx:1.20-alpine
 
 ARG USER_ID
 
+# Change timezone | requires dependency: tzdata
+ARG TZ='Europe/Berlin'
+ENV TZ ${TZ}
+
 # Install system dependencies
 RUN apk add --no-cache \
-    openrc \
-    sudo bash nano curl wget zip \
-    shadow
-
-# Requires shadow package
-RUN usermod -u $USER_ID nginx && groupmod -g $USER_ID nginx
+    tzdata \
+    nano curl zip
 
 # Add host config file
 ADD ./nginx.conf /etc/nginx/
