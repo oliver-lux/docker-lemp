@@ -2,7 +2,6 @@ version: '3.9'
 
 networks:
   app:
-    driver: bridge
   
 volumes:
   mysql_data:
@@ -16,10 +15,9 @@ services:
       args:
         - USER_ID=${USER_ID:-1000}
     container_name: nginx
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget -O /dev/null http://localhost || exit 1"]
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "curl /dev/null localhost || exit 1"]
     ports:
       - 80:80
     volumes:
@@ -42,9 +40,6 @@ services:
       - ./${SOURCE_DIR}:/var/www/html
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/health-check.sh"]
-      interval: 5s
-      timeout: 10s
-      retries: 3
     networks:
       - app
 
@@ -66,8 +61,6 @@ services:
       SERVICE_NAME: mysql
     healthcheck:
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 10s
-          retries: 3
     networks:
       - app
 
@@ -81,8 +74,6 @@ services:
       - redis_data:/data
     healthcheck:
           test: ["CMD", "redis-cli", "ping"]
-          timeout: 10s
-          retries: 3
     networks:
       - app
 
