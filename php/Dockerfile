@@ -4,6 +4,7 @@ ARG USER_ID
 
 # Install system dependencies
 RUN apk add --no-cache \
+      fcgi \
       sudo bash nano curl zip \
       shadow \
       libzip libpng
@@ -30,6 +31,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Requires shadow package
 RUN usermod -u $USER_ID www-data && groupmod -g $USER_ID www-data
 
-WORKDIR /var/www/html
+RUN set -xe && echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
-CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+ADD ./health-check.sh /usr/local/bin/
+
+WORKDIR /var/www/html
