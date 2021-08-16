@@ -25,7 +25,7 @@ services:
       - php
     environment:
       # Used by nginx-proxy
-      - VIRTUAL_HOST=site.test
+      - VIRTUAL_HOST=${DOMAIN}
       - VIRTUAL_PORT=80
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
