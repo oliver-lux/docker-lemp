@@ -1,7 +1,6 @@
 version: '3.9'
 
 networks:
-  default:
   reverse_proxy:
     external: true
 
@@ -22,8 +21,7 @@ services:
     # ports: 
     #   - "8080:80"
     environment:
-      # Used by nginx-proxy
-      - VIRTUAL_HOST=${DOMAIN}
+      VIRTUAL_HOST:
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -40,7 +38,7 @@ services:
     build:
       context: ./php
       args:
-        - USER_ID=${USER_ID:-1000}
+        USER_ID:
     restart: unless-stopped
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
@@ -51,19 +49,16 @@ services:
   mysql:
     image: mariadb:10.5
     restart: unless-stopped
-    tty: true
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      MYSQL_DATABASE:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      MYSQL_ROOT_PASSWORD:
     healthcheck:
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-
+  
   redis:
     image: redis:6.2-alpine
     restart: unless-stopped
