@@ -1,8 +1,8 @@
 version: '3.9'
 
 networks:
-  app:
-    name: "alpha"
+  default:
+    name: default_network
 
 volumes:
   mysql_data:
@@ -20,10 +20,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl /dev/null localhost || exit 1"]
     ports: 
-      - 8080:80
-    expose:
-      - 80
-      - 443
+      - "8080:80"
     environment:
       # Used by nginx-proxy
       - VIRTUAL_HOST=site.test
@@ -36,14 +33,13 @@ services:
       - redis
       - mysql
     networks:
-      - app
+      - default
 
   php:
     build:
       context: ./php
       args:
         - USER_ID=${USER_ID:-1000}
-    container_name: php
     restart: unless-stopped
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
@@ -51,15 +47,12 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/health-check.sh"]
     networks:
-      - app
+      - default
 
   mysql:
     image: mariadb:10.5
-    container_name: mysql
     restart: unless-stopped
     tty: true
-    ports:
-      - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
@@ -72,44 +65,37 @@ services:
     healthcheck:
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
     networks:
-      - app
+      - default
 
   redis:
     image: redis:6.2-alpine
-    container_name: redis
     restart: unless-stopped
-    ports:
-      - 6379:6379
     volumes:
       - redis_data:/data
     healthcheck:
           test: ["CMD", "redis-cli", "ping"]
     networks:
-      - app
+      - default
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - default
+    profiles:
+      - tools
 
   npm:
     image: node:lts-alpine3.14
-    container_name: npm
     volumes:
       - ./${SOURCE_DIR}:/var/www/html
     ports:
-      - 3000:3000
-      - 3001:3001
+      - "3000:3000"
+      - "3001:3001"
     working_dir: /var/www/html
     entrypoint: ['npm']
     user: 1000:1000
     profiles:
       - tools
-    networks:
-      - app
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog
-    ports:
-      - 1025:1025
-      - 8025:8025
-    profiles:
-      - tools
-    networks:
-      - app
