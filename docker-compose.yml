@@ -24,8 +24,8 @@ services:
             test: [CMD-SHELL, curl /dev/null localhost || exit 1]
         depends_on:
             - php
-            - redis
             - mysql
+            - redis
         networks:
             - default
             - reverse_proxy
