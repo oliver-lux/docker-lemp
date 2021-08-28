@@ -6,7 +6,7 @@ services:
     ports:
         - 8025:8025
     profiles:
-        - dev
+        - utils
   npm:
     image: node:lts-alpine3.14
     volumes:
@@ -20,4 +20,4 @@ services:
         - 3000:3000
         - 3001:3001
     profiles:
-        - dev
+        - utils
