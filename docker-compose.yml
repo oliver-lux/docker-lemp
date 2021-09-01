@@ -17,6 +17,8 @@ services:
         environment:
             TZ: ${TIMEZONE:-UTC}
             VIRTUAL_HOST:
+            LETSENCRYPT_HOST: $VIRTUAL_HOST
+            LETSENCRYPT_EMAIL:
         ports:
             - 8080:80
         restart: unless-stopped
@@ -40,6 +42,7 @@ services:
         volumes:
             - ./${SOURCE_DIR}:/var/www/html
             - ./config/php/files/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./config/ssh:/home/www-data/.ssh
         working_dir: /var/www/html
         restart: unless-stopped
         healthcheck:
