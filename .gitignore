@@ -1,3 +1,5 @@
 .env
 src/
 app/
+config/deploy/.ssh
+docker-compose.override.yml

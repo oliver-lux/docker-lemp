@@ -42,7 +42,7 @@ services:
         volumes:
             - ./${SOURCE_DIR}:/var/www/html
             - ./config/php/files/custom.ini:/usr/local/etc/php/conf.d/custom.ini
-            - ./config/ssh:/home/www-data/.ssh
+            - ./config/deploy/.ssh:/home/www-data/.ssh
         working_dir: /var/www/html
         restart: unless-stopped
         healthcheck:
