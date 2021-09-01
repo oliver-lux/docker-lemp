@@ -2,18 +2,15 @@ FROM php:7.4-fpm-alpine
 
 ARG USER_ID
 
-RUN \
-  apk add --update --no-cache \
-    # enable colored output
-    bash \
+RUN apk add --update --no-cache \
+    # common
+    bash curl unzip git openssh \
     # enable timezone modification
     tzdata \
     # required by health-check.sh
     fcgi \
     # enable usermod command
     shadow \
-    # common
-    curl unzip \
     # required by intl extension:
     icu \
     # required by zip extension:
