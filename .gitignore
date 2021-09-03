@@ -1,5 +1,4 @@
-.env
 src/
-app/
+.env
 config/deploy/.ssh
 docker-compose.override.yml
