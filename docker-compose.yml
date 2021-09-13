@@ -48,7 +48,7 @@ services:
         working_dir: /var/www/html
         restart: unless-stopped
         healthcheck:
-            test: [CMD-SHELL, health-check.sh]
+            test: [CMD-SHELL, healthcheck.sh]
     mysql:
         build: ./config/mysql
         # image: mariadb:latest
