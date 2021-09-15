@@ -60,7 +60,7 @@ services:
         volumes: [mysql_data:/var/lib/mysql]
         restart: unless-stopped
         healthcheck:
-            test: [CMD, mysqladmin, ping, -h, localhost]
+            test: [CMD, mysqladmin, ping, -h, localhost, -u$MYSQL_USER, -p$MYSQL_ROOT_PASSWORD ]
             interval: 60s
 
     redis:
@@ -71,6 +71,7 @@ services:
         restart: unless-stopped
         healthcheck:
             test: [CMD, redis-cli, ping]
+            interval: 60s
 
     mailhog:
         build: ./config/mailhog
