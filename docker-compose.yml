@@ -34,7 +34,6 @@ services:
             args:
                 USER_ID:
         user: $USER_ID:$USER_ID
-        tty: true
         environment:
             TZ: $TIMEZONE
         volumes:
@@ -50,7 +49,6 @@ services:
 
     mysql:
         build: ./config/mysql
-        tty: true
         environment:
             TZ: $TIMEZONE
             MYSQL_DATABASE:
