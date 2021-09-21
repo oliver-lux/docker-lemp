@@ -13,7 +13,7 @@ services:
         volumes:
             - $SOURCE_DIR:/var/www/html
             - ./config/nginx/files/nginx.conf:/etc/nginx/nginx.conf
-            - ./config/nginx/files/default.conf:/etc/nginx/conf.d/default.conf
+            - ./config/nginx/files/vhost.conf:/etc/nginx/conf.d/vhost.conf
         environment:
             TZ: $TIMEZONE
             VIRTUAL_HOST:
