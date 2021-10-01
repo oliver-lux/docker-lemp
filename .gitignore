@@ -1,4 +1,5 @@
 src/
 .env
 config/deploy/.ssh
+config/php/files/bootstrap.sh
 docker-compose.override.yml
