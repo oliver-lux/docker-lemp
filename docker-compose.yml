@@ -30,7 +30,7 @@ services:
 
     php:
         build:
-            context: config/php/php-8.0
+            context: ./config/php
             args:
                 USER_ID:
         user: $USER_ID:$USER_ID
@@ -39,12 +39,12 @@ services:
         volumes:
             - $SOURCE_DIR:/var/www/html
             - ./config/deploy/.ssh:/home/www-data/.ssh
-            - ./config/php/files/healthcheck.sh:/usr/local/bin/healthcheck.sh
-            - ./config/php/files/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./config/php/files/healthcheck.sh:/scripts/healthcheck.sh
+            - ./config/php/files/php.production.ini:/usr/local/etc/php/php.ini
         working_dir: /var/www/html
         restart: unless-stopped
         healthcheck:
-            test: [CMD-SHELL, healthcheck.sh]
+            test: [CMD-SHELL, sh /scripts/healthcheck.sh]
             interval: 60s
 
     mysql:
