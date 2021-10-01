@@ -1,37 +1,26 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.0-fpm-alpine
 
 ARG USER_ID
 
 RUN apk add --update --no-cache \
     # common
-    bash curl unzip git openssh \
+    bash curl git unzip openssh mariadb-client \
     # enable timezone modification
     tzdata \
     # required by health-check.sh
     fcgi \
-    # enable usermod command
+    # contains usermod util
     shadow \
-    # required by intl extension:
-    icu \
-    # required by zip extension:
-    libzip \
-    # required by gd extension:
-    libpng libjpeg
+    # required php extensions
+    gmp icu libzip libpng libjpeg
 
-# Add php build dependencies
 RUN apk add --no-cache --virtual build-deps \
-    # basic build tools
     g++ make autoconf \
-    # required by intl extension:
-    icu-dev \
-    # required by zip extension:
-    libzip-dev \
-    # required by gd extension:
-    libpng-dev libjpeg-turbo-dev
+    gmp-dev icu-dev libzip-dev libpng-dev libjpeg-turbo-dev
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg=/usr/include \
-    && docker-php-ext-install -j$(nproc) pdo_mysql opcache gd exif intl sockets bcmath zip
+    && docker-php-ext-install -j$(nproc) pdo_mysql opcache gd gmp intl zip exif sockets bcmath
 
 RUN pecl install redis \
     &&  rm -rf /tmp/pear \
@@ -40,11 +29,18 @@ RUN pecl install redis \
 # Clean build dependencies
 RUN apk del build-deps
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Requires shadow package
 RUN usermod -u $USER_ID www-data && groupmod -g $USER_ID www-data
 
 # Enable status page
 RUN set -xe && echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Config bash
+COPY --chown=www-data:www-data ./files/.bashrc /home/www-data
+
+COPY files/bootstrap.sh /scripts/bootstrap.sh
+
+RUN sh /scripts/bootstrap.sh
