@@ -1,4 +1,5 @@
-# !/bin/sh
+#!/bin/sh
+
 # vim: set filetype=sh :
 
 # Author: <Renato Mefi gh@mefi.in> https://github.com/renatomefi
