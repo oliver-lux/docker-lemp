@@ -23,8 +23,8 @@ RUN docker-php-ext-configure gd --with-jpeg=/usr/include \
     && docker-php-ext-install -j$(nproc) pdo_mysql opcache gd gmp intl zip exif sockets bcmath
 
 RUN pecl install redis \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable redis
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
 
 # Clean build dependencies
 RUN apk del build-deps

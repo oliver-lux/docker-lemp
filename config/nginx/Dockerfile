@@ -1,4 +1,4 @@
-FROM nginx:1.21-alpine
+FROM nginx:stable-alpine
 
 # Install system dependencies
 RUN apk add --update --no-cache \
